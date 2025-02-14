@@ -5,7 +5,18 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE_HOST, AUTH_SERVICE_PORT } from '@repo/config/auth';
 import { AUTH_SERVICE_NAME } from './constant';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@repo/auth/guards';
+import { JwtAuthGuard, RolesGuard } from '@repo/auth/guards';
+import { JwtModule } from '@nestjs/jwt';
+import {
+  googleOAuthConfig,
+  jwtConfig,
+  refreshJwtConfig as refreshConfig,
+} from '@repo/auth/config';
+import { ConfigModule } from '@nestjs/config';
+import { JwtStrategy } from '@repo/auth/strategies';
+import { GoogleStrategy } from '@repo/auth/strategies';
+import { RefreshStrategy } from '@repo/auth/strategies';
+import { LocalStrategy } from '@repo/auth/strategies';
 
 @Module({
   imports: [
@@ -21,13 +32,25 @@ import { JwtAuthGuard } from '@repo/auth/guards';
         }),
       },
     ]),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(refreshConfig),
+    ConfigModule.forFeature(googleOAuthConfig),
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
+    JwtStrategy,
+    RefreshStrategy,
+    GoogleStrategy,
+    LocalStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard, //@UseGuard(JwtAuthGuard)
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

@@ -1,31 +1,39 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { refreshJwtConfig as refreshConfig } from '@repo/auth/config';
+import { ExtractJwt, Strategy, StrategyOptionsWithRequest } from 'passport-jwt';
+import { refreshJwtConfig as refreshConfig } from '../config';
 import { Request } from 'express';
-import { AuthService } from '../auth.service';
 import { ConfigType } from '@nestjs/config';
-import type { AuthJwtPayload } from '@repo/auth/types';
+import type { AuthJwtPayload } from '../types';
+import { ClientProxy } from '@nestjs/microservices';
+import { AuthPatterns } from '@repo/contracts/auth';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
   constructor(
     @Inject(refreshConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof refreshConfig>,
-    private authService: AuthService,
+    @Inject('AUTH_SERVICE')
+    private authClient: ClientProxy,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromBodyField('refresh'),
       secretOrKey: refreshTokenConfig.secret,
       ignoreExpiration: false,
       passReqToCallback: true,
-    });
+    } as StrategyOptionsWithRequest);
   }
-  // request.user
-  validate(req: Request, payload: AuthJwtPayload) {
+
+  async validate(req: Request, payload: AuthJwtPayload) {
     const userId = payload.sub;
     const refreshToken = req.body.refresh;
 
-    return this.authService.validateRefreshToken(userId, refreshToken);
+    return await firstValueFrom(
+      this.authClient.send(AuthPatterns.VALIDATE_REFRESH_TOKEN, {
+        userId,
+        refreshToken,
+      }),
+    );
   }
 }

@@ -1,23 +1,30 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { googleOAuthConfig } from '@repo/auth/config';
+import {
+  Strategy,
+  StrategyOptions,
+  VerifyCallback,
+} from 'passport-google-oauth20';
+import { googleOAuthConfig } from '../config/google-oauth.config';
 import { ConfigType } from '@nestjs/config';
-import { AuthService } from '../auth.service';
+import { ClientProxy } from '@nestjs/microservices';
+import { AuthPatterns } from '@repo/contracts/auth';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(googleOAuthConfig.KEY)
     private readonly googleConfig: ConfigType<typeof googleOAuthConfig>,
-    private readonly authService: AuthService,
+    @Inject('AUTH_SERVICE')
+    private readonly authClient: ClientProxy,
   ) {
     super({
       clientID: googleConfig.clientID,
       clientSecret: googleConfig.clientSecret,
       callbackURL: googleConfig.callbackURL,
       scope: ['email', 'profile'],
-    });
+    } as StrategyOptions);
   }
 
   async validate(
@@ -26,11 +33,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     profile: any,
     done: VerifyCallback,
   ) {
-    const user = await this.authService.validateGoogleUser({
-      email: profile.emails[0].value,
-      name: profile.displayName,
-      password: '',
-    });
+    const user = await firstValueFrom(
+      this.authClient.send(AuthPatterns.GOOGLE_LOGIN, {
+        email: profile.emails[0].value,
+        name: profile.displayName,
+        password: '',
+      }),
+    );
 
     done(null, user);
     return user;
