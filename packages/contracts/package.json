@@ -9,12 +9,19 @@
     "./users": {
       "types": "./dist/users/index.d.ts",
       "default": "./dist/users/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
     }
   },
   "typesVersions": {
     "*": {
       "users": [
         "./dist/users/index.d.ts"
+      ],
+      "auth": [
+        "./dist/auth/index.d.ts"
       ]
     }
   },

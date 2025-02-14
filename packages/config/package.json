@@ -13,6 +13,10 @@
     "./auth": {
       "types": "./dist/auth/index.d.ts",
       "default": "./dist/auth/index.js"
+    },
+    "./web": {
+      "types": "./dist/web/index.d.ts",
+      "default": "./dist/web/index.js"
     }
   },
   "typesVersions": {
@@ -22,6 +26,9 @@
       ],
       "auth": [
         "./dist/auth/index.d.ts"
+      ],
+      "web": [
+        "./dist/web/index.d.ts"
       ]
     }
   },
