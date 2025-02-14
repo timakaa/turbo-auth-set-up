@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_NAME } from './constant';
-import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config';
+import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config/users';
 
 @Module({
   imports: [

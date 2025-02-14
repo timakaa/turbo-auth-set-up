@@ -2,22 +2,38 @@
   "name": "@repo/config",
   "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./users": {
+      "types": "./dist/users/index.d.ts",
+      "default": "./dist/users/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "users": [
+        "./dist/users/index.d.ts"
+      ],
+      "auth": [
+        "./dist/auth/index.d.ts"
+      ]
     }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
   },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.13.4"
+  },
   "dependencies": {
     "dotenv": "^16.4.7"
-  },
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
   }
 }
