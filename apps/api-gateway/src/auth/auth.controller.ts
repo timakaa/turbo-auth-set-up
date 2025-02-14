@@ -13,8 +13,8 @@ import {
   GoogleAuthGuard,
   LocalAuthGuard,
   RefreshAuthGuard,
-} from '../../../../packages/auth/dist/guards';
-import { Public } from '../../../../packages/auth/dist/decorators';
+} from '@repo/auth/guards';
+import { Public } from '@repo/auth/decorators';
 import { CreateUserDto } from '@repo/contracts/users';
 import { Response } from 'express';
 import { FRONTEND_URL } from '@repo/config/web';
@@ -60,6 +60,11 @@ export class AuthController {
     res.redirect(
       `${FRONTEND_URL}/api/auth/google/callback?userId=${resopnse.id}&name=${resopnse.name}&accessToken=${resopnse.accessToken}&refreshToken=${resopnse.refreshToken}&role=${resopnse.role}`,
     );
+  }
+
+  @Get('protected_test')
+  protectedTest() {
+    return 'this is protected route';
   }
 
   @Post('signout')

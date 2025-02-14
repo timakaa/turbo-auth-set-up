@@ -4,6 +4,8 @@ import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE_HOST, AUTH_SERVICE_PORT } from '@repo/config/auth';
 import { AUTH_SERVICE_NAME } from './constant';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@repo/auth/guards';
 
 @Module({
   imports: [
@@ -21,6 +23,12 @@ import { AUTH_SERVICE_NAME } from './constant';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, //@UseGuard(JwtAuthGuard)
+    },
+  ],
 })
 export class AuthModule {}

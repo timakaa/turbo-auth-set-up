@@ -7,35 +7,35 @@
   "license": "UNLICENSED",
   "exports": {
     "./guards": {
-      "default": "./dist/auth/guards/index.ts",
-      "types": "./dist/auth/guards/index.d.ts"
+      "default": "./dist/guards/index.js",
+      "types": "./dist/guards/index.d.ts"
     },
     "./decorators": {
-      "default": "./dist/auth/decorators/index.ts",
-      "types": "./dist/auth/decorators/index.d.ts"
+      "default": "./dist/decorators/index.js",
+      "types": "./dist/decorators/index.d.ts"
     },
     "./config": {
-      "default": "./dist/auth/config/index.ts",
-      "types": "./dist/auth/config/index.d.ts"
+      "default": "./dist/config/index.js",
+      "types": "./dist/config/index.d.ts"
     },
     "./types": {
-      "types": "./dist/auth/types/index.d.ts",
-      "default": "./dist/auth/types/index.js"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
     }
   },
   "typesVersions": {
     "*": {
       "guards": [
-        "./dist/auth/guards/index.d.ts"
+        "./dist/guards/index.d.ts"
       ],
       "decorators": [
-        "./dist/auth/decorators/index.d.ts"
+        "./dist/decorators/index.d.ts"
       ],
       "config": [
-        "./dist/auth/config/index.d.ts"
+        "./dist/config/index.d.ts"
       ],
       "types": [
-        "./dist/auth/types/index.d.ts"
+        "./dist/types/index.d.ts"
       ]
     }
   },
