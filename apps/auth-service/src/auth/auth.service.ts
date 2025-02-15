@@ -11,23 +11,20 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigType } from '@nestjs/config';
-import { refreshJwtConfig as refreshConfig } from '@repo/auth/config';
 import { firstValueFrom } from 'rxjs';
 import { hash, verify } from 'argon2';
+import { TokenService } from '@repo/auth';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(USER_SERVICE_NAME) private readonly userClient: ClientProxy,
-    private readonly jwtService: JwtService,
-    @Inject(refreshConfig.KEY)
-    private refreshTokenConfig: ConfigType<typeof refreshConfig>,
+    private readonly tokenService: TokenService,
   ) {}
 
   async login(userId: number, name: string, role: Role) {
-    const { accessToken, refreshToken } = await this.generateTokens(userId);
+    const { accessToken, refreshToken } =
+      await this.tokenService.generateTokens(userId);
     const hashedRT = await hash(refreshToken);
     await firstValueFrom(
       this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
@@ -61,19 +58,6 @@ export class AuthService {
         hashedRefreshToken: null,
       }),
     );
-  }
-
-  async generateTokens(userId: number) {
-    const payload = { sub: userId };
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload, this.refreshTokenConfig),
-    ]);
-
-    return {
-      accessToken,
-      refreshToken,
-    };
   }
 
   async validateJwtUser(userId: number) {
@@ -125,7 +109,8 @@ export class AuthService {
   }
 
   async refreshToken(userId: number, name: string) {
-    const { accessToken, refreshToken } = await this.generateTokens(userId);
+    const { accessToken, refreshToken } =
+      await this.tokenService.generateTokens(userId);
     const hashedRT = await hash(refreshToken);
     await firstValueFrom(
       this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {

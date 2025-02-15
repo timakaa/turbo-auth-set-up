@@ -5,7 +5,13 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./guards": {
       "default": "./dist/guards/index.js",
       "types": "./dist/guards/index.d.ts"
@@ -29,6 +35,9 @@
   },
   "typesVersions": {
     "*": {
+      ".": [
+        "./dist/index.d.ts"
+      ],
       "guards": [
         "./dist/guards/index.d.ts"
       ],

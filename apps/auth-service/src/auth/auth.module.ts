@@ -9,7 +9,7 @@ import {
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_NAME } from '@repo/contracts/users';
 import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config/users';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { TokenModule, TokenService } from '@repo/auth';
 
 @Module({
   imports: [
@@ -25,11 +25,11 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
         }),
       },
     ]),
-    JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshConfig),
+    TokenModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService],
+  providers: [AuthService],
 })
 export class AuthModule {}
