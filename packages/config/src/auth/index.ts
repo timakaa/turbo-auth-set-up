@@ -7,3 +7,4 @@ export const AUTH_SERVICE_HOST = process.env.AUTH_SERVICE_HOST || "localhost";
 export const AUTH_SERVICE_PORT: number = parseInt(
   process.env.AUTH_SERVICE_PORT || "3002",
 );
+export const AUTH_SERVICE_NAME = "AUTH_SERVICE";

@@ -8,5 +8,3 @@ export const AuthPatterns = {
   VALIDATE_LOCAL_USER: "auth.validate_local_user",
   VALIDATE_JWT_USER: "auth.validate_jwt_user",
 };
-
-export const AUTH_SERVICE_NAME = "AUTH_SERVICE";

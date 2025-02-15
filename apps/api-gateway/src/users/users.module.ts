@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config/users';
-import { USER_SERVICE_NAME } from '@repo/contracts/users';
+import {
+  USER_SERVICE_HOST,
+  USER_SERVICE_NAME,
+  USER_SERVICE_PORT,
+} from '@repo/config/users';
 
 @Module({
   imports: [

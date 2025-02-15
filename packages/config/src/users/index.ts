@@ -7,3 +7,5 @@ export const USER_SERVICE_HOST = process.env.USER_SERVICE_HOST || "localhost";
 export const USER_SERVICE_PORT: number = parseInt(
   process.env.USER_SERVICE_PORT || "3001",
 );
+
+export const USER_SERVICE_NAME = "USER_SERVICE";

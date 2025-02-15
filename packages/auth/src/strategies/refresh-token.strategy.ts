@@ -6,8 +6,9 @@ import { Request } from 'express';
 import { ConfigType } from '@nestjs/config';
 import type { AuthJwtPayload } from '../types';
 import { ClientProxy } from '@nestjs/microservices';
-import { AUTH_SERVICE_NAME, AuthPatterns } from '@repo/contracts/auth';
+import { AuthPatterns } from '@repo/contracts/auth';
 import { firstValueFrom } from 'rxjs';
+import { AUTH_SERVICE_NAME } from '@repo/config/auth';
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {

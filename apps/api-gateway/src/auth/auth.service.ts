@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { CreateUserDto, Role } from '@repo/contracts/users';
-import { AUTH_SERVICE_NAME, AuthPatterns } from '@repo/contracts/auth';
+import { AuthPatterns } from '@repo/contracts/auth';
+import { AUTH_SERVICE_NAME } from '@repo/config/auth';
 
 @Injectable()
 export class AuthService {

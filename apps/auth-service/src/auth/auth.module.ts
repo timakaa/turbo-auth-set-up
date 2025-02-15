@@ -7,9 +7,12 @@ import {
   refreshJwtConfig as refreshConfig,
 } from '@repo/auth/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { USER_SERVICE_NAME } from '@repo/contracts/users';
-import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config/users';
-import { TokenModule, TokenService } from '@repo/auth';
+import {
+  USER_SERVICE_HOST,
+  USER_SERVICE_NAME,
+  USER_SERVICE_PORT,
+} from '@repo/config/users';
+import { TokenModule } from '@repo/auth';
 
 @Module({
   imports: [

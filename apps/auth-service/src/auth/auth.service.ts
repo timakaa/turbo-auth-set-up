@@ -1,9 +1,4 @@
-import {
-  UserPatterns,
-  Role,
-  USER_SERVICE_NAME,
-  CreateUserDto,
-} from '@repo/contracts/users';
+import { UserPatterns, Role, CreateUserDto } from '@repo/contracts/users';
 import {
   ConflictException,
   Inject,
@@ -14,6 +9,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { hash, verify } from 'argon2';
 import { TokenService } from '@repo/auth';
+import { USER_SERVICE_NAME } from '@repo/config/users';
 
 @Injectable()
 export class AuthService {
