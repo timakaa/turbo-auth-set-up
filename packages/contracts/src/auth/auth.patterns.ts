@@ -1,8 +1,6 @@
 export const AuthPatterns = {
   LOGIN: "auth.login",
   SIGNUP: "auth.signup",
-  GOOGLE_LOGIN: "auth.google_login",
-  GOOGLE_CALLBACK: "auth.google_callback",
   REFRESH_TOKEN: "auth.refresh_token",
   LOGOUT: "auth.logout",
   VALIDATE_REFRESH_TOKEN: "auth.validate_refresh_token",

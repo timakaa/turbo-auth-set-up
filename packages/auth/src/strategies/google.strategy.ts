@@ -34,9 +34,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     done: VerifyCallback,
   ) {
     const user = await firstValueFrom(
-      this.authClient.send(AuthPatterns.GOOGLE_LOGIN, {
+      this.authClient.send(AuthPatterns.LOGIN, {
         email: profile.emails[0].value,
         name: profile.displayName,
+        // TODO: Figure out how to handle password for google login
         password: '',
       }),
     );

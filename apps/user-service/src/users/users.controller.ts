@@ -35,4 +35,17 @@ export class UsersController {
   remove(@Payload() id: number) {
     return this.usersService.remove(id);
   }
+
+  @MessagePattern(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN)
+  updateHashedRefreshToken(
+    @Payload() id: number,
+    @Payload() hashedRefreshToken: string,
+  ) {
+    return this.usersService.updateHashedRefreshToken(id, hashedRefreshToken);
+  }
+
+  @MessagePattern(UserPatterns.GET_USER_BY_EMAIL)
+  findByEmail(@Payload() email: string) {
+    return this.usersService.findByEmail(email);
+  }
 }

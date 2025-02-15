@@ -32,10 +32,6 @@ export class AuthService {
     );
   }
 
-  async googleLogin() {
-    return firstValueFrom(this.userClient.send(AuthPatterns.GOOGLE_LOGIN, {}));
-  }
-
   async refreshToken(userId: number, name: string) {
     return firstValueFrom(
       this.userClient.send(AuthPatterns.REFRESH_TOKEN, {
