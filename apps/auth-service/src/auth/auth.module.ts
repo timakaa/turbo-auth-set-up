@@ -1,21 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ConfigModule, ConfigType } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import {
   jwtConfig,
-  googleOAuthConfig,
   refreshJwtConfig as refreshConfig,
 } from '@repo/auth/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_NAME } from '@repo/contracts/users';
 import { USER_SERVICE_HOST, USER_SERVICE_PORT } from '@repo/config/users';
-import {
-  GoogleStrategy,
-  JwtStrategy,
-  LocalStrategy,
-  RefreshStrategy,
-} from '@repo/auth/strategies';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
