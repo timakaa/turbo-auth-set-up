@@ -62,11 +62,6 @@ export class AuthController {
     );
   }
 
-  @Get('protected_test')
-  protectedTest() {
-    return 'this is protected route';
-  }
-
   @Post('signout')
   signOut(@Req() req) {
     return this.authService.signOut(req.user.id);
