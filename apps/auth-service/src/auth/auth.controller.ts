@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 import { AuthPatterns } from '@repo/contracts/auth';
-import { Role } from '@repo/contracts/users';
+import { CreateUserDto, Role } from '@repo/contracts/users';
 
 @Controller()
 export class AuthController {
@@ -14,22 +14,12 @@ export class AuthController {
   }
 
   @MessagePattern(AuthPatterns.SIGNUP)
-  signup(@Payload() userId: number, name: string, role: Role) {
-    return this.authService.register(userId, name, role);
+  signup(@Payload() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
   }
 
   @MessagePattern(AuthPatterns.LOGOUT)
   logout(@Payload() userId: number) {
     return this.authService.logout(userId);
-  }
-
-  @MessagePattern(AuthPatterns.GOOGLE_LOGIN)
-  googleLogin() {
-    return this.authService.googleLogin();
-  }
-
-  @MessagePattern(AuthPatterns.GOOGLE_CALLBACK)
-  googleCallback() {
-    return this.authService.googleCallback();
   }
 }
