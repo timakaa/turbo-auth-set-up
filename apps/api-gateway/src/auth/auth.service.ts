@@ -2,8 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { CreateUserDto, Role } from '@repo/contracts/users';
-import { AUTH_SERVICE_NAME } from './constant';
-import { AuthPatterns } from '@repo/contracts/auth';
+import { AUTH_SERVICE_NAME, AuthPatterns } from '@repo/contracts/auth';
 
 @Injectable()
 export class AuthService {
@@ -43,36 +42,6 @@ export class AuthService {
         userId,
         name,
       }),
-    );
-  }
-
-  async validateRefreshToken(userId: number, refreshToken: string) {
-    return firstValueFrom(
-      this.userClient.send(AuthPatterns.VALIDATE_REFRESH_TOKEN, {
-        userId,
-        refreshToken,
-      }),
-    );
-  }
-
-  async validateGoogleUser(googleUser: CreateUserDto) {
-    return firstValueFrom(
-      this.userClient.send(AuthPatterns.VALIDATE_GOOGLE_USER, googleUser),
-    );
-  }
-
-  async validateLocalUser(email: string, password: string) {
-    return firstValueFrom(
-      this.userClient.send(AuthPatterns.VALIDATE_LOCAL_USER, {
-        email,
-        password,
-      }),
-    );
-  }
-
-  async validateJwtUser(userId: number) {
-    return firstValueFrom(
-      this.userClient.send(AuthPatterns.VALIDATE_JWT_USER, userId),
     );
   }
 }

@@ -9,7 +9,7 @@ import {
 import { jwtConfig } from '../config';
 import type { AuthJwtPayload } from '../types';
 import { ClientProxy } from '@nestjs/microservices';
-import { AuthPatterns } from '@repo/contracts/auth';
+import { AUTH_SERVICE_NAME, AuthPatterns } from '@repo/contracts/auth';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(jwtConfig.KEY)
     private jwtConfiguration: ConfigType<typeof jwtConfig>,
-    @Inject('AUTH_SERVICE')
+    @Inject(AUTH_SERVICE_NAME)
     private authClient: ClientProxy,
   ) {
     super({

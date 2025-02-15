@@ -3,20 +3,20 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE_HOST, AUTH_SERVICE_PORT } from '@repo/config/auth';
-import { AUTH_SERVICE_NAME } from './constant';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard, RolesGuard } from '@repo/auth/guards';
-import { JwtModule } from '@nestjs/jwt';
-import {
-  googleOAuthConfig,
-  jwtConfig,
-  refreshJwtConfig as refreshConfig,
-} from '@repo/auth/config';
-import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from '@repo/auth/strategies';
 import { GoogleStrategy } from '@repo/auth/strategies';
 import { RefreshStrategy } from '@repo/auth/strategies';
 import { LocalStrategy } from '@repo/auth/strategies';
+import { AUTH_SERVICE_NAME } from '@repo/contracts/auth';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import {
+  googleOAuthConfig,
+  jwtConfig,
+  refreshJwtConfig,
+} from '@repo/auth/config';
 
 @Module({
   imports: [
@@ -34,8 +34,8 @@ import { LocalStrategy } from '@repo/auth/strategies';
     ]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    ConfigModule.forFeature(refreshConfig),
     ConfigModule.forFeature(googleOAuthConfig),
+    ConfigModule.forFeature(refreshJwtConfig),
   ],
   controllers: [AuthController],
   providers: [

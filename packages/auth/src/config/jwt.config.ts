@@ -1,12 +1,21 @@
 import { registerAs } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
 
-export const jwtConfig = registerAs(
-  'jwt',
-  (): JwtModuleOptions => ({
-    secret: process.env.JWT_SECRET,
+// Load auth package environment variables
+const loadAuthConfig = () => {
+  const envPath = path.resolve(__dirname, '../../.env');
+  const authEnv = dotenv.config({ path: envPath }).parsed || {};
+  return authEnv;
+};
+
+export const jwtConfig = registerAs('jwt', (): JwtModuleOptions => {
+  const authEnv = loadAuthConfig();
+  return {
+    secret: authEnv.JWT_SECRET,
     signOptions: {
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn: authEnv.JWT_EXPIRES_IN,
     },
-  }),
-);
+  };
+});

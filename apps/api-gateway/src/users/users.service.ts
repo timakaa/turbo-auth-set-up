@@ -3,9 +3,9 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   CreateUserDto,
   UpdateUserDto,
+  USER_SERVICE_NAME,
   UserPatterns,
 } from '@repo/contracts/users';
-import { USER_SERVICE_NAME } from './constant';
 
 @Injectable()
 export class UsersService {

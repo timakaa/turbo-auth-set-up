@@ -5,3 +5,5 @@ export const UserPatterns = {
   DELETE_USER: "user.delete",
   FIND_ALL_USER: "user.findAll",
 };
+
+export const USER_SERVICE_NAME = "USER_SERVICE";
