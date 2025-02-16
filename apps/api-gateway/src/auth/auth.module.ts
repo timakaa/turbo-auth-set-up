@@ -46,4 +46,9 @@ import {
     LocalStrategy,
   ],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor() {
+    console.log('Auth Service Host: ', AUTH_SERVICE_HOST);
+    console.log('Auth Service Port: ', AUTH_SERVICE_PORT);
+  }
+}

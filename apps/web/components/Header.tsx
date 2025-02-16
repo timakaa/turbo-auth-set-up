@@ -5,8 +5,8 @@ import { Button } from "@repo/ui";
 const Header = () => {
   return (
     <header>
-      <Button variant='default'>
-        <span>Sign in</span>
+      <Button variant='outline'>
+        <span className=''>Sign in</span>
       </Button>
     </header>
   );

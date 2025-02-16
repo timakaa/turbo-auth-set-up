@@ -26,4 +26,9 @@ import {
   controllers: [UsersController],
   providers: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule {
+  constructor() {
+    console.log('User Service Host: ', USER_SERVICE_HOST);
+    console.log('User Service Port: ', USER_SERVICE_PORT);
+  }
+}

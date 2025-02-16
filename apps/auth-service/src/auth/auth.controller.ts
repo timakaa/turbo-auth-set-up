@@ -28,30 +28,24 @@ export class AuthController {
     return this.authService.validateGoogleUser(googleUser);
   }
 
-  // TODO: Create real DTO in contracts
   @MessagePattern(AuthPatterns.VALIDATE_LOCAL_USER)
   validateLocalUser(
-    @Payload() localValidateDto: { email: string; password: string },
+    @Payload() { email, password }: { email: string; password: string },
   ) {
-    return this.authService.validateLocalUser(
-      localValidateDto.email,
-      localValidateDto.password,
-    );
+    return this.authService.validateLocalUser(email, password);
   }
 
   @MessagePattern(AuthPatterns.VALIDATE_REFRESH_TOKEN)
   validateRefreshToken(
-    @Payload() refreshTokenDto: { userId: number; name: string },
+    @Payload()
+    { userId, refreshToken }: { userId: number; refreshToken: string },
   ) {
-    return this.authService.validateRefreshToken(
-      refreshTokenDto.userId,
-      refreshTokenDto.name,
-    );
+    return this.authService.validateRefreshToken(userId, refreshToken);
   }
 
   @MessagePattern(AuthPatterns.VALIDATE_JWT_USER)
-  validateJwtUser(@Payload() jwtValidateDto: { userId: number }) {
-    return this.authService.validateJwtUser(jwtValidateDto.userId);
+  validateJwtUser(@Payload() userId: number) {
+    return this.authService.validateJwtUser(userId);
   }
 
   @MessagePattern(AuthPatterns.REFRESH_TOKEN)
