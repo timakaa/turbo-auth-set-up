@@ -27,4 +27,38 @@ export class AuthController {
   validateGoogleUser(@Payload() googleUser: CreateUserDto) {
     return this.authService.validateGoogleUser(googleUser);
   }
+
+  // TODO: Create real DTO in contracts
+  @MessagePattern(AuthPatterns.VALIDATE_LOCAL_USER)
+  validateLocalUser(
+    @Payload() localValidateDto: { email: string; password: string },
+  ) {
+    return this.authService.validateLocalUser(
+      localValidateDto.email,
+      localValidateDto.password,
+    );
+  }
+
+  @MessagePattern(AuthPatterns.VALIDATE_REFRESH_TOKEN)
+  validateRefreshToken(
+    @Payload() refreshTokenDto: { userId: number; name: string },
+  ) {
+    return this.authService.validateRefreshToken(
+      refreshTokenDto.userId,
+      refreshTokenDto.name,
+    );
+  }
+
+  @MessagePattern(AuthPatterns.VALIDATE_JWT_USER)
+  validateJwtUser(@Payload() jwtValidateDto: { userId: number }) {
+    return this.authService.validateJwtUser(jwtValidateDto.userId);
+  }
+
+  @MessagePattern(AuthPatterns.REFRESH_TOKEN)
+  refreshToken(@Payload() refreshTokenDto: { userId: number; name: string }) {
+    return this.authService.refreshToken(
+      refreshTokenDto.userId,
+      refreshTokenDto.name,
+    );
+  }
 }

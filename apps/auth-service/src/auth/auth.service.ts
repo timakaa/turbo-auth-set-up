@@ -1,11 +1,12 @@
 import { UserPatterns, Role, CreateUserDto } from '@repo/contracts/users';
 import {
   ConflictException,
+  HttpStatus,
   Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { hash, verify } from 'argon2';
 import { TokenService } from '@repo/auth';
@@ -42,7 +43,11 @@ export class AuthService {
     const user = await firstValueFrom(
       this.userClient.send(UserPatterns.GET_USER_BY_EMAIL, createUserDto.email),
     );
-    if (user) throw new ConflictException('User already exists!');
+    if (user)
+      throw new RpcException({
+        status: HttpStatus.BAD_REQUEST,
+        message: 'User already exists!',
+      });
     return await firstValueFrom(
       this.userClient.send(UserPatterns.CREATE_USER, createUserDto),
     );
