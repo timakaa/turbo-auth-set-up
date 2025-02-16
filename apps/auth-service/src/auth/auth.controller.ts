@@ -9,8 +9,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern(AuthPatterns.LOGIN)
-  login(@Payload() userId: number, name: string, role: Role) {
-    return this.authService.login(userId, name, role);
+  login(@Payload() loginDto: { userId: number; name: string; role: Role }) {
+    return this.authService.login(loginDto);
   }
 
   @MessagePattern(AuthPatterns.SIGNUP)
@@ -21,5 +21,10 @@ export class AuthController {
   @MessagePattern(AuthPatterns.LOGOUT)
   logout(@Payload() userId: number) {
     return this.authService.logout(userId);
+  }
+
+  @MessagePattern(AuthPatterns.VALIDATE_GOOGLE_USER)
+  validateGoogleUser(@Payload() googleUser: CreateUserDto) {
+    return this.authService.validateGoogleUser(googleUser);
   }
 }

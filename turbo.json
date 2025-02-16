@@ -4,7 +4,16 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*", "$JWT_SECRET"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*",
+        "$JWT_SECRET",
+        "$FRONTEND_URL",
+        "$USER_SERVICE_HOST",
+        "$USER_SERVICE_PORT",
+        "$AUTH_SERVICE_HOST",
+        "$AUTH_SERVICE_PORT"
+      ],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
@@ -16,10 +25,6 @@
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "pipeline": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
     }
   }
 }

@@ -28,8 +28,6 @@ import { TokenModule } from '@repo/auth';
         }),
       },
     ]),
-    ConfigModule.forFeature(jwtConfig),
-    ConfigModule.forFeature(refreshConfig),
     TokenModule,
   ],
   controllers: [AuthController],

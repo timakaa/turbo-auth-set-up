@@ -4,6 +4,7 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { AUTH_SERVICE_HOST, AUTH_SERVICE_PORT } from '@repo/config/auth';
 
 async function bootstrap() {
+  // Create actual microservice
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
@@ -14,6 +15,7 @@ async function bootstrap() {
       },
     },
   );
+
   await app.listen();
 }
 bootstrap();

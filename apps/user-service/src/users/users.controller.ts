@@ -38,10 +38,12 @@ export class UsersController {
 
   @MessagePattern(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN)
   updateHashedRefreshToken(
-    @Payload() id: number,
-    @Payload() hashedRefreshToken: string,
+    @Payload() updateUserDto: { id: number; hashedRefreshToken: string },
   ) {
-    return this.usersService.updateHashedRefreshToken(id, hashedRefreshToken);
+    return this.usersService.updateHashedRefreshToken(
+      updateUserDto.id,
+      updateUserDto.hashedRefreshToken,
+    );
   }
 
   @MessagePattern(UserPatterns.GET_USER_BY_EMAIL)

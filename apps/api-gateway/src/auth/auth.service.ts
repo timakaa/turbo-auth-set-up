@@ -8,12 +8,12 @@ import { AUTH_SERVICE_NAME } from '@repo/config/auth';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(AUTH_SERVICE_NAME) private readonly userClient: ClientProxy,
+    @Inject(AUTH_SERVICE_NAME) private readonly authClient: ClientProxy,
   ) {}
 
   async login(userId: number, name: string, role: Role) {
     const user = await firstValueFrom(
-      this.userClient.send(AuthPatterns.LOGIN, {
+      this.authClient.send(AuthPatterns.LOGIN, {
         userId,
         name,
         role,
@@ -24,18 +24,18 @@ export class AuthService {
   }
 
   async signOut(userId: number) {
-    return firstValueFrom(this.userClient.send(AuthPatterns.LOGOUT, userId));
+    return firstValueFrom(this.authClient.send(AuthPatterns.LOGOUT, userId));
   }
 
   async registerUser(createUserDto: CreateUserDto) {
     return firstValueFrom(
-      this.userClient.send(AuthPatterns.SIGNUP, createUserDto),
+      this.authClient.send(AuthPatterns.SIGNUP, createUserDto),
     );
   }
 
   async refreshToken(userId: number, name: string) {
     return firstValueFrom(
-      this.userClient.send(AuthPatterns.REFRESH_TOKEN, {
+      this.authClient.send(AuthPatterns.REFRESH_TOKEN, {
         userId,
         name,
       }),

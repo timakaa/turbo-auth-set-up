@@ -25,7 +25,7 @@ function doException(err: any) {
         error = err.response.error;
       }
 
-      return new HttpException(error, err.status);
+      return new HttpException(error, err.status || 500);
     }
   } catch {
     return new HttpException('Something went wrong', HttpStatus.BAD_GATEWAY);

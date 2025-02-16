@@ -5,6 +5,7 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new ErrorInterceptor());
+  await app.startAllMicroservices();
   await app.listen(8000);
 }
 bootstrap();

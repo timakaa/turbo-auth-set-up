@@ -6,6 +6,7 @@ import {
   USER_SERVICE_NAME,
   USER_SERVICE_PORT,
 } from '@repo/config/users';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import {
         }),
       },
     ]),
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
 })
 export class AppModule {}

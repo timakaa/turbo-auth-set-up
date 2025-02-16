@@ -12,7 +12,7 @@ const loadAuthConfig = () => {
 export const googleOAuthConfig = registerAs('googleOAuth', () => {
   const authEnv = loadAuthConfig();
   return {
-    clientID: authEnv.GOOGLE_CLINET_ID,
+    clientID: authEnv.GOOGLE_CLIENT_ID,
     clientSecret: authEnv.GOOGLE_CLIENT_SECRET,
     callbackURL: authEnv.GOOGLE_CALLBACK_URL,
   };

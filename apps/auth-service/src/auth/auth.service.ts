@@ -18,20 +18,21 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async login(userId: number, name: string, role: Role) {
+  async login(loginDto: { userId: number; name: string; role: Role }) {
+    console.log(loginDto);
     const { accessToken, refreshToken } =
-      await this.tokenService.generateTokens(userId);
+      await this.tokenService.generateTokens(loginDto.userId);
     const hashedRT = await hash(refreshToken);
     await firstValueFrom(
       this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
-        id: userId,
+        id: loginDto.userId,
         hashedRefreshToken: hashedRT,
       }),
     );
     return {
-      id: userId,
-      name: name,
-      role,
+      id: loginDto.userId,
+      name: loginDto.name,
+      role: loginDto.role,
       accessToken,
       refreshToken,
     };
