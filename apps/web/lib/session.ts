@@ -5,7 +5,6 @@ import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Role } from "@repo/contracts/users";
-import { useEffect, useState } from "react";
 
 export type Session = {
   user: {
@@ -84,50 +83,11 @@ export async function updateTokens({
   await createSession(newPayload);
 }
 
-// Add new types and functions for client-side session management
-type SessionState = {
-  session: Session | null;
-  loading: boolean;
-  error: Error | null;
-};
-
 export async function getClientSession(): Promise<Session | null> {
-  "use server";
-
   try {
     return await getSession();
   } catch (error) {
     console.error("Failed to fetch session:", error);
     return null;
   }
-}
-
-export function useSession() {
-  const [state, setState] = useState<SessionState>({
-    session: null,
-    loading: true,
-    error: null,
-  });
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const session = await getClientSession();
-        setState({ session, loading: false, error: null });
-      } catch (error) {
-        setState({
-          session: null,
-          loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error("Failed to fetch session"),
-        });
-      }
-    };
-
-    fetchSession();
-  }, []);
-
-  return state;
 }

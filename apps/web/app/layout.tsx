@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "../components/Header";
 import "@repo/ui/index.css";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Turbo Auth",
@@ -15,8 +16,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className='dark'>
-        <Header />
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
