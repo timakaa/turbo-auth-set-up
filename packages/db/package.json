@@ -1,0 +1,39 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "generate:user": "drizzle-kit generate:pg --config=configs/user-service.ts",
+    "generate:auth": "drizzle-kit generate:pg --config=configs/auth-service.ts",
+    "migrate:user": "node -r esbuild-register migrate.ts user-service",
+    "migrate:auth": "node -r esbuild-register migrate.ts auth-service",
+    "studio:user": "drizzle-kit studio --config=configs/user-service.ts",
+    "studio:auth": "drizzle-kit studio --config=configs/auth-service.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.29.3",
+    "drizzle-zod": "^0.5.1",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.11.16",
+    "@types/pg": "^8.11.2",
+    "dotenv": "^16.4.1",
+    "drizzle-kit": "^0.21.1",
+    "esbuild": "^0.19.12",
+    "esbuild-register": "^3.5.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
