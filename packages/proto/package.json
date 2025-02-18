@@ -1,0 +1,21 @@
+{
+  "name": "@repo/proto",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./auth/interfaces": "./auth/index.ts"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "scripts": {
+    "generate": "tsproto --path ./auth",
+    "build": "pnpm generate"
+  },
+  "dependencies": {
+    "grpc-tools": "^1.13.0",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "nestjs-proto-gen-ts": "^1.0.21",
+    "rxjs": "^7.8.1"
+  }
+}

@@ -18,6 +18,7 @@ import {
   AUTH_SERVICE_NAME,
   AUTH_SERVICE_PORT,
 } from '@repo/config/auth';
+import { AUTH_PROTO_PATH } from '@repo/config/proto-paths';
 
 @Module({
   imports: [
@@ -25,10 +26,11 @@ import {
       {
         name: AUTH_SERVICE_NAME,
         useFactory: () => ({
-          transport: Transport.TCP,
+          transport: Transport.GRPC,
           options: {
-            host: AUTH_SERVICE_HOST,
-            port: AUTH_SERVICE_PORT,
+            package: 'auth',
+            protoPath: AUTH_PROTO_PATH,
+            url: `${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}`,
           },
         }),
       },

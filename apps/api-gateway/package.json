@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@repo/auth": "workspace:*",
     "@repo/config": "workspace:*",
+    "@repo/proto": "workspace:*",
     "@repo/contracts": "workspace:*",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

@@ -6,8 +6,7 @@
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "node",
-    "module": "CommonJS",
+    "moduleResolution": "node16",
     "declaration": true
   },
   "include": ["src"]

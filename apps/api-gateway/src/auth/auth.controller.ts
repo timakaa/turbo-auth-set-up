@@ -16,7 +16,7 @@ import {
 } from '@repo/auth/guards';
 import { Public } from '@repo/auth/decorators';
 import { CreateUserDto } from '@repo/contracts/users';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { FRONTEND_URL } from '@repo/config/web';
 
 @Controller('auth')

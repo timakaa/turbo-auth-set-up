@@ -2,23 +2,10 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "dist/index.d.ts": [
-        "./dist/index.d.ts"
-      ]
-    }
-  },
   "exports": {
     "./index.css": "./src/index.css",
-    ".": "./dist/index.js",
+    ".": "./src/index.ts",
     "./tailwind.config": "./tailwind.config.js"
-  },
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

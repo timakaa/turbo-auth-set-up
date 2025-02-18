@@ -1,20 +1,21 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*",
-        "$JWT_SECRET",
-        "$FRONTEND_URL",
-        "$USER_SERVICE_HOST",
-        "$USER_SERVICE_PORT",
-        "$AUTH_SERVICE_HOST",
-        "$AUTH_SERVICE_PORT"
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "env": [
+        "JWT_SECRET",
+        "FRONTEND_URL",
+        "USER_SERVICE_HOST",
+        "USER_SERVICE_PORT",
+        "AUTH_SERVICE_HOST",
+        "AUTH_SERVICE_PORT",
+        "SESSION_SECRET_KEY"
       ],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "proto/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

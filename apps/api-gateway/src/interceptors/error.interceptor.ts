@@ -8,27 +8,66 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { RpcException } from '@nestjs/microservices';
 
 function doException(err: any) {
-  console.log(err);
+  console.log('Error details:', err);
+
+  // handle gRPC errors
+  if (err.code && err.details) {
+    return new HttpException(
+      {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: err.details,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  if (err instanceof RpcException) {
+    const error = err.getError();
+    return new HttpException(
+      {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: typeof error === 'object' ? (error as any).message : error,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
   try {
     if (err.status === 'error') {
-      return new HttpException('Something went wrong', HttpStatus.BAD_GATEWAY);
-    } else {
-      let error = err.message;
-
-      if (err.error) {
-        error = err.error;
-      }
-
-      if (err.response && err.response.error) {
-        error = err.response.error;
-      }
-
-      return new HttpException(error, err.status || 500);
+      return new HttpException(
+        {
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Something went wrong',
+        },
+        HttpStatus.BAD_GATEWAY,
+      );
     }
+
+    const message = err.message || err.details;
+    const statusCode =
+      err.status ||
+      err.code ||
+      err.statusCode ||
+      HttpStatus.INTERNAL_SERVER_ERROR;
+
+    return new HttpException(
+      {
+        statusCode,
+        message,
+      },
+      statusCode,
+    );
   } catch {
-    return new HttpException('Something went wrong', HttpStatus.BAD_GATEWAY);
+    return new HttpException(
+      {
+        statusCode: HttpStatus.BAD_GATEWAY,
+        message: 'Something went wrong',
+      },
+      HttpStatus.BAD_GATEWAY,
+    );
   }
 }
 
@@ -40,7 +79,7 @@ export class ErrorInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       catchError((err) => {
-        return throwError(doException(err));
+        return throwError(() => doException(err));
       }),
     );
   }

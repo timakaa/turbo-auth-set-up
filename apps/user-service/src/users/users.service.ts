@@ -22,10 +22,14 @@ export class UsersService {
         throw new RpcException(error);
       }
       const hashedPassword = await hash(password);
-      return await this.drizzle.db.insert(userServiceSchema.users).values({
-        password: hashedPassword,
-        ...user,
-      });
+      const newUser = await this.drizzle.db
+        .insert(userServiceSchema.users)
+        .values({
+          password: hashedPassword,
+          ...user,
+        })
+        .returning();
+      return newUser;
     } catch (error) {
       if (error instanceof RpcException) {
         throw error;

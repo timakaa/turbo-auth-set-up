@@ -1,11 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ConfigModule } from '@nestjs/config';
-import {
-  jwtConfig,
-  refreshJwtConfig as refreshConfig,
-} from '@repo/auth/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import {
   USER_SERVICE_HOST,

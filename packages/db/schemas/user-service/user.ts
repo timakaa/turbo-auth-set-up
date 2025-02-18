@@ -7,12 +7,12 @@ export const RoleEnum = z.enum(["ADMIN", "EDITOR", "USER"]);
 export type Role = z.infer<typeof RoleEnum>;
 
 // Define users table
-export const users = pgTable("users", {
+export const users = pgTable("User", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   password: text("password").notNull(),
-  hashedRefreshToken: text("hashed_refresh_token"),
+  hashedRefreshToken: text("hashedRefreshToken"),
   role: varchar("role", { length: 50 }).$type<Role>().default("USER").notNull(),
 });
 

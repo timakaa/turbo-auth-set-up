@@ -1,10 +1,10 @@
 export const AuthPatterns = {
-  LOGIN: "auth.login",
-  SIGNUP: "auth.signup",
-  REFRESH_TOKEN: "auth.refresh_token",
-  LOGOUT: "auth.logout",
-  VALIDATE_REFRESH_TOKEN: "auth.validate_refresh_token",
-  VALIDATE_GOOGLE_USER: "auth.validate_google_user",
-  VALIDATE_LOCAL_USER: "auth.validate_local_user",
-  VALIDATE_JWT_USER: "auth.validate_jwt_user",
+  LOGIN: "login",
+  SIGNUP: "signUp",
+  REFRESH_TOKEN: "refreshToken",
+  LOGOUT: "logout",
+  VALIDATE_REFRESH_TOKEN: "validateRefreshToken",
+  VALIDATE_GOOGLE_USER: "validateGoogleUser",
+  VALIDATE_LOCAL_USER: "validateLocalUser",
+  VALIDATE_JWT_USER: "validateJwtUser",
 };

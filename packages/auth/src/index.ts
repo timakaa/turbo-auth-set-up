@@ -1,7 +1,7 @@
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { refreshJwtConfig as refreshConfig } from './config/refresh.config';
 import { Inject, Injectable, Module } from '@nestjs/common';
-import { ConfigModule, ConfigType } from '@nestjs/config';
+import { ConfigModule, type ConfigType } from '@nestjs/config';
 import { jwtConfig } from './config';
 
 @Injectable()

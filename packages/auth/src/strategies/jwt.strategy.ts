@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import type { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import {
   ExtractJwt,
@@ -8,18 +8,23 @@ import {
 } from 'passport-jwt';
 import { jwtConfig } from '../config';
 import type { AuthJwtPayload } from '../types';
-import { ClientProxy } from '@nestjs/microservices';
-import { AuthPatterns } from '@repo/contracts/auth';
+import type { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { AUTH_SERVICE_NAME } from '@repo/config/auth';
+import { auth } from '@repo/proto/auth/interfaces';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy
+  extends PassportStrategy(Strategy)
+  implements OnModuleInit
+{
+  private authService: auth.AuthService;
+
   constructor(
     @Inject(jwtConfig.KEY)
     private jwtConfiguration: ConfigType<typeof jwtConfig>,
     @Inject(AUTH_SERVICE_NAME)
-    private authClient: ClientProxy,
+    private authClient: ClientGrpc,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -28,10 +33,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     } as StrategyOptionsWithoutRequest);
   }
 
+  onModuleInit() {
+    this.authService =
+      this.authClient.getService<auth.AuthService>('AuthService');
+  }
+
   async validate(payload: AuthJwtPayload) {
     const userId = payload.sub;
     return await firstValueFrom(
-      this.authClient.send(AuthPatterns.VALIDATE_JWT_USER, {
+      this.authService.validateJwtUser({
         userId,
       }),
     );

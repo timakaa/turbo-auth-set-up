@@ -1,19 +1,26 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { CreateUserDto, Role } from '@repo/contracts/users';
-import { AuthPatterns } from '@repo/contracts/auth';
 import { AUTH_SERVICE_NAME } from '@repo/config/auth';
+import { auth } from '@repo/proto/auth/interfaces';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  private authService: auth.AuthService;
+
   constructor(
-    @Inject(AUTH_SERVICE_NAME) private readonly authClient: ClientProxy,
+    @Inject(AUTH_SERVICE_NAME) private readonly authClient: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.authService =
+      this.authClient.getService<auth.AuthService>('AuthService');
+  }
 
   async login(userId: number, name: string, role: Role) {
     const user = await firstValueFrom(
-      this.authClient.send(AuthPatterns.LOGIN, {
+      this.authService.login({
         userId,
         name,
         role,
@@ -24,21 +31,17 @@ export class AuthService {
   }
 
   async signOut(userId: number) {
-    return firstValueFrom(this.authClient.send(AuthPatterns.LOGOUT, userId));
+    return this.authService.logout({ userId });
   }
 
   async registerUser(createUserDto: CreateUserDto) {
-    return firstValueFrom(
-      this.authClient.send(AuthPatterns.SIGNUP, createUserDto),
-    );
+    return this.authService.signUp(createUserDto);
   }
 
   async refreshToken(userId: number, name: string) {
-    return firstValueFrom(
-      this.authClient.send(AuthPatterns.REFRESH_TOKEN, {
-        userId,
-        name,
-      }),
-    );
+    return this.authService.refreshToken({
+      userId,
+      name,
+    });
   }
 }

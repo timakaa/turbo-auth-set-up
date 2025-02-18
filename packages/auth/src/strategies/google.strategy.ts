@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import {
   Strategy,
@@ -6,21 +6,25 @@ import {
   VerifyCallback,
 } from 'passport-google-oauth20';
 import { googleOAuthConfig } from '../config/google-oauth.config';
-import { ConfigType } from '@nestjs/config';
-import { ClientProxy } from '@nestjs/microservices';
-import { AuthPatterns } from '@repo/contracts/auth';
+import type { ConfigType } from '@nestjs/config';
+import type { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { AUTH_SERVICE_NAME } from '@repo/config/auth';
+import { auth } from '@repo/proto/auth/interfaces';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy) {
+export class GoogleStrategy
+  extends PassportStrategy(Strategy)
+  implements OnModuleInit
+{
   private isConnected = false;
+  private authService: auth.AuthService;
 
   constructor(
     @Inject(googleOAuthConfig.KEY)
     private readonly googleConfig: ConfigType<typeof googleOAuthConfig>,
     @Inject(AUTH_SERVICE_NAME)
-    private readonly authClient: ClientProxy,
+    private readonly authClient: ClientGrpc,
   ) {
     console.log('Google Strategy Constructor');
     console.log('Config:', {
@@ -37,6 +41,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     } as StrategyOptions);
   }
 
+  onModuleInit() {
+    this.authService =
+      this.authClient.getService<auth.AuthService>('AuthService');
+  }
+
   async validate(
     accessToken: string,
     refreshToken: string,
@@ -44,11 +53,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     done: VerifyCallback,
   ) {
     try {
-      if (!this.isConnected) {
-        await this.authClient.connect();
-        this.isConnected = true;
-      }
-
       const payload = {
         email: profile.emails[0].value,
         name: profile.displayName,
@@ -58,7 +62,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       console.log('Sending auth request with payload:', payload);
 
       const user = await firstValueFrom(
-        this.authClient.send(AuthPatterns.VALIDATE_GOOGLE_USER, payload),
+        this.authService.validateGoogleUser(payload),
       ).catch((err) => {
         console.error('Error during auth service communication:', err);
         throw err;
@@ -71,15 +75,5 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       this.isConnected = false;
       return done(error, false);
     }
-  }
-
-  onModuleInit() {
-    // Connect when the module initializes
-    this.authClient.connect();
-  }
-
-  onModuleDestroy() {
-    // Cleanup connection
-    this.authClient.close();
   }
 }

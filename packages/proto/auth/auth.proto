@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  // User authentication
+  rpc Login (LoginRequest) returns (AuthResponse);
+  rpc SignUp (SignUpRequest) returns (AuthResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc ValidateGoogleUser (ValidateGoogleUserRequest) returns (ValidateGoogleUserResponse);
+  rpc ValidateLocalUser (ValidateLocalUserRequest) returns (ValidateLocalUserResponse);
+  rpc ValidateJwtUser (ValidateJwtUserRequest) returns (ValidateJwtUserResponse);
+  rpc ValidateRefreshToken (ValidateRefreshTokenRequest) returns (ValidateRefreshTokenResponse);
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+}
+
+// Login
+message LoginRequest {
+  uint64 userId = 1;
+  string name = 2;
+  string role = 3;
+}
+
+message AuthResponse {
+  uint64 id = 1;
+  string name = 2;
+  string role = 3;
+  string accessToken = 4;
+  string refreshToken = 5;
+}
+
+// SignUp
+message SignUpRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message SignUpResponse {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// Logout
+message LogoutRequest {
+  uint64 userId = 1;
+}
+
+message LogoutResponse {
+  string message = 1;
+}
+
+// ValidateGoogleUser
+message ValidateGoogleUserRequest {
+  string email = 1;
+}
+
+message ValidateGoogleUserResponse {
+  string id = 1;
+  string name = 2;
+  string role = 3;
+}
+
+// ValidateLocalUser
+message ValidateLocalUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message ValidateLocalUserResponse {
+  uint64 id = 1;
+  string name = 2;
+  string role = 4;
+}
+
+// ValidateJwtUser
+message ValidateJwtUserRequest {
+  uint64 userId = 1;
+}
+
+message ValidateJwtUserResponse {
+  uint64 id = 1;
+  string role = 3;
+}
+
+// ValidateRefreshToken
+message ValidateRefreshTokenRequest {
+  uint64 userId = 1;
+  string refreshToken = 2;
+}
+
+message ValidateRefreshTokenResponse {
+  uint64 id = 1;
+}
+
+// RefreshToken
+message RefreshTokenRequest {
+  uint64 userId = 1;
+  string name = 2;
+}
+
+message RefreshTokenResponse {
+  uint64 id = 1;
+  string name = 2;
+  string accessToken = 3;
+  string refreshToken = 4;
+}
+
+

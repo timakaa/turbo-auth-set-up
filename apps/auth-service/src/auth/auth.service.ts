@@ -1,6 +1,5 @@
 import { UserPatterns, Role, CreateUserDto } from '@repo/contracts/users';
 import {
-  ConflictException,
   HttpStatus,
   Inject,
   Injectable,
@@ -40,17 +39,52 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto) {
-    const user = await firstValueFrom(
-      this.userClient.send(UserPatterns.GET_USER_BY_EMAIL, createUserDto.email),
-    );
-    if (user)
+    try {
+      const user = await firstValueFrom(
+        this.userClient.send(
+          UserPatterns.GET_USER_BY_EMAIL,
+          createUserDto.email,
+        ),
+      );
+
+      if (user) {
+        throw new RpcException({
+          status: HttpStatus.BAD_REQUEST,
+          message: 'User already exists!',
+        });
+      }
+
+      const newUser = await firstValueFrom(
+        this.userClient.send(UserPatterns.CREATE_USER, createUserDto),
+      );
+
+      const { accessToken, refreshToken } =
+        await this.tokenService.generateTokens(newUser.id);
+
+      const hashedRT = await hash(refreshToken);
+      await firstValueFrom(
+        this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
+          id: newUser.id,
+          hashedRefreshToken: hashedRT,
+        }),
+      );
+
+      return {
+        id: newUser.id,
+        name: newUser.name,
+        role: newUser.role,
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      if (error instanceof RpcException) {
+        throw error;
+      }
       throw new RpcException({
-        status: HttpStatus.BAD_REQUEST,
-        message: 'User already exists!',
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
       });
-    return await firstValueFrom(
-      this.userClient.send(UserPatterns.CREATE_USER, createUserDto),
-    );
+    }
   }
 
   async logout(userId: number) {
