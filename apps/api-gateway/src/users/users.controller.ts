@@ -15,18 +15,7 @@ import { Public } from '@repo/auth/decorators';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: Delete this endpoint
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   @Public()
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);

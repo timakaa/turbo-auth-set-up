@@ -15,9 +15,10 @@ function doException(err: any) {
 
   // handle gRPC errors
   if (err.code && err.details) {
+    console.log(err);
     return new HttpException(
       {
-        statusCode: HttpStatus.BAD_REQUEST,
+        statusCode: err.code || HttpStatus.BAD_REQUEST,
         message: err.details,
       },
       HttpStatus.BAD_REQUEST,

@@ -17,7 +17,6 @@ export class GoogleStrategy
   extends PassportStrategy(Strategy)
   implements OnModuleInit
 {
-  private isConnected = false;
   private authService: auth.AuthService;
 
   constructor(
@@ -26,13 +25,6 @@ export class GoogleStrategy
     @Inject(AUTH_SERVICE_NAME)
     private readonly authClient: ClientGrpc,
   ) {
-    console.log('Google Strategy Constructor');
-    console.log('Config:', {
-      clientID: googleConfig.clientID,
-      clientSecret: '***',
-      callbackURL: googleConfig.callbackURL,
-    });
-
     super({
       clientID: googleConfig.clientID,
       clientSecret: googleConfig.clientSecret,
@@ -53,13 +45,14 @@ export class GoogleStrategy
     done: VerifyCallback,
   ) {
     try {
+      console.log('PROFILE -----------', profile);
       const payload = {
         email: profile.emails[0].value,
         name: profile.displayName,
         password: '',
       };
 
-      console.log('Sending auth request with payload:', payload);
+      console.log('PAYLOAD -----------', payload);
 
       const user = await firstValueFrom(
         this.authService.validateGoogleUser(payload),
@@ -68,11 +61,9 @@ export class GoogleStrategy
         throw err;
       });
 
-      console.log('Received user from auth service:', user);
       return done(null, user);
     } catch (error) {
       console.error('Validation error:', error);
-      this.isConnected = false;
       return done(error, false);
     }
   }

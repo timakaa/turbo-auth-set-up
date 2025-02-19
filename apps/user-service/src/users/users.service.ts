@@ -13,24 +13,19 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...user } = createUserDto;
-      const candidate = await this.findByEmail(user.email);
-      if (candidate) {
-        const error = {
-          status: HttpStatus.BAD_REQUEST,
-          message: 'User already exists',
-        };
-        throw new RpcException(error);
-      }
-      const hashedPassword = await hash(password);
+      const hashedPassword = password ? await hash(password) : '';
       const newUser = await this.drizzle.db
         .insert(userServiceSchema.users)
         .values({
           password: hashedPassword,
+          name: user.name,
           ...user,
         })
         .returning();
-      return newUser;
+
+      return { ...newUser[0] };
     } catch (error) {
+      console.log('Caught error:', error);
       if (error instanceof RpcException) {
         throw error;
       }
@@ -39,12 +34,18 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.drizzle.db
+    const user = await this.drizzle.db
       .select()
       .from(userServiceSchema.users)
       .where(eq(userServiceSchema.users.email, email))
       .limit(1)
-      .then((rows) => rows[0] || null);
+      .then((rows) => rows[0]);
+
+    if (!user) {
+      return { notFound: {} };
+    }
+
+    return { user };
   }
 
   async findAll() {
@@ -54,31 +55,45 @@ export class UsersService {
   async remove(userId: number) {
     return await this.drizzle.db
       .delete(userServiceSchema.users)
-      .where(eq(userServiceSchema.users.id, userId));
+      .where(eq(userServiceSchema.users.id, userId))
+      .returning();
   }
 
-  async findOne(userId: number) {
-    return await this.drizzle.db
+  async findOne({ id }: { id: number }) {
+    const user = await this.drizzle.db
       .select()
       .from(userServiceSchema.users)
-      .where(eq(userServiceSchema.users.id, userId))
+      .where(eq(userServiceSchema.users.id, id))
       .limit(1)
-      .then((rows) => rows[0] || null);
+      .then((rows) => rows[0]);
+
+    if (!user) {
+      throw new RpcException({
+        code: HttpStatus.NOT_FOUND,
+        message: `User not found`,
+      });
+    }
+
+    return user;
   }
 
   async updateHashedRefreshToken(userId: number, hashedRT: string | null) {
-    return await this.drizzle.db
+    const updatedUser = await this.drizzle.db
       .update(userServiceSchema.users)
       .set({
         hashedRefreshToken: hashedRT,
       })
-      .where(eq(userServiceSchema.users.id, userId));
+      .where(eq(userServiceSchema.users.id, userId))
+      .returning();
+
+    return { ...updatedUser[0] };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     return await this.drizzle.db
       .update(userServiceSchema.users)
       .set(updateUserDto)
-      .where(eq(userServiceSchema.users.id, id));
+      .where(eq(userServiceSchema.users.id, id))
+      .returning();
   }
 }

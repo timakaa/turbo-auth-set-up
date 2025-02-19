@@ -4,4 +4,4 @@ import { join } from "path";
 export const PROTO_DIR = join(__dirname, "../../../proto");
 
 // Auth service proto paths
-export const AUTH_PROTO_PATH = join(PROTO_DIR, "auth/auth.proto");
+export const PROTO_PATH = join(PROTO_DIR, "auth/auth.proto");

@@ -1,38 +1,38 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { USER_SERVICE_NAME } from '@repo/config/users';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  UserPatterns,
-} from '@repo/contracts/users';
+import { CreateUserDto, UpdateUserDto } from '@repo/contracts/users';
+import { users } from '@repo/proto/users/interface';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
+  private userService: users.UsersService;
+
   constructor(
-    @Inject(USER_SERVICE_NAME) private readonly userClient: ClientProxy,
+    @Inject(USER_SERVICE_NAME) private readonly userClient: ClientGrpc,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return this.userClient.send(UserPatterns.CREATE_USER, createUserDto);
+  onModuleInit() {
+    this.userService =
+      this.userClient.getService<users.UsersService>(USER_SERVICE_NAME);
   }
 
-  findAll() {
-    return this.userClient.send(UserPatterns.FIND_ALL_USER, {});
+  async create(createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
   }
 
   findOne(id: number) {
-    return this.userClient.send(UserPatterns.GET_USER, id);
+    return this.userService.findOne({ id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userClient.send(UserPatterns.UPDATE_USER, {
+    return this.userService.updateUser({
       ...updateUserDto,
       id,
     });
   }
 
   remove(id: number) {
-    return this.userClient.send(UserPatterns.DELETE_USER, id);
+    return this.userService.deleteUser({ id });
   }
 }

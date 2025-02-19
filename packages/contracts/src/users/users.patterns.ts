@@ -1,9 +1,8 @@
 export const UserPatterns = {
-  CREATE_USER: "user.create",
-  GET_USER: "user.get",
-  UPDATE_USER: "user.update",
-  DELETE_USER: "user.delete",
-  FIND_ALL_USER: "user.findAll",
-  UPDATE_HASHED_REFRESH_TOKEN: "user.updateHashedRefreshToken",
-  GET_USER_BY_EMAIL: "user.findByEmail",
+  CREATE_USER: "createUser",
+  FIND_ONE: "findOne",
+  UPDATE_USER: "updateUser",
+  DELETE_USER: "deleteUser",
+  UPDATE_HASHED_REFRESH_TOKEN: "updateHashedRefreshToken",
+  FIND_BY_EMAIL: "findByEmail",
 };

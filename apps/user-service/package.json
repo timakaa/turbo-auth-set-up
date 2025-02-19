@@ -18,8 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "node -r esbuild-register migrate.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "@repo/config": "workspace:*",
     "@repo/contracts": "workspace:*",
     "@repo/db": "workspace:*",
+    "@repo/proto": "workspace:*",
     "@types/pg": "^8.11.2",
     "argon2": "^0.41.1",
     "dotenv": "^16.4.7",

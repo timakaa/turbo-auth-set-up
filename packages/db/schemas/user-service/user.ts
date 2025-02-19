@@ -14,6 +14,7 @@ export const users = pgTable("User", {
   password: text("password").notNull(),
   hashedRefreshToken: text("hashedRefreshToken"),
   role: varchar("role", { length: 50 }).$type<Role>().default("USER").notNull(),
+  provider: varchar("provider", { length: 50 }).notNull(),
 });
 
 // Create Zod schemas for type safety

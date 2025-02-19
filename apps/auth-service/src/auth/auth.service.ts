@@ -3,28 +3,39 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { ClientGrpc, ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { hash, verify } from 'argon2';
 import { TokenService } from '@repo/auth';
 import { USER_SERVICE_NAME } from '@repo/config/users';
+import { users } from '@repo/proto/users/interface';
+import console from 'console';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  private userService: users.UsersService;
+
   constructor(
-    @Inject(USER_SERVICE_NAME) private readonly userClient: ClientProxy,
+    @Inject(USER_SERVICE_NAME) private readonly userClient: ClientGrpc,
     private readonly tokenService: TokenService,
   ) {}
 
+  async onModuleInit() {
+    this.userService =
+      this.userClient.getService<users.UsersService>(USER_SERVICE_NAME);
+  }
+
   async login(loginDto: { userId: number; name: string; role: Role }) {
-    console.log(loginDto);
     const { accessToken, refreshToken } =
       await this.tokenService.generateTokens(loginDto.userId);
+
     const hashedRT = await hash(refreshToken);
+
     await firstValueFrom(
-      this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
+      this.userService.updateHashedRefreshToken({
         id: loginDto.userId,
         hashedRefreshToken: hashedRT,
       }),
@@ -39,57 +50,48 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto) {
-    try {
-      const user = await firstValueFrom(
-        this.userClient.send(
-          UserPatterns.GET_USER_BY_EMAIL,
-          createUserDto.email,
-        ),
-      );
+    const response = await firstValueFrom(
+      this.userService.findByEmail({ email: createUserDto.email }),
+    );
 
-      if (user) {
-        throw new RpcException({
-          status: HttpStatus.BAD_REQUEST,
-          message: 'User already exists!',
-        });
-      }
-
-      const newUser = await firstValueFrom(
-        this.userClient.send(UserPatterns.CREATE_USER, createUserDto),
-      );
-
-      const { accessToken, refreshToken } =
-        await this.tokenService.generateTokens(newUser.id);
-
-      const hashedRT = await hash(refreshToken);
-      await firstValueFrom(
-        this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
-          id: newUser.id,
-          hashedRefreshToken: hashedRT,
-        }),
-      );
-
-      return {
-        id: newUser.id,
-        name: newUser.name,
-        role: newUser.role,
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      if (error instanceof RpcException) {
-        throw error;
-      }
+    if (response.user) {
       throw new RpcException({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Internal server error',
+        code: HttpStatus.BAD_REQUEST,
+        message: 'User already exists!',
       });
     }
+
+    const newUser = await firstValueFrom(
+      this.userService.createUser({
+        ...createUserDto,
+        provider: 'local',
+      }),
+    );
+
+    const { accessToken, refreshToken } =
+      await this.tokenService.generateTokens(newUser.id);
+
+    const hashedRT = await hash(refreshToken);
+    await firstValueFrom(
+      this.userService.updateHashedRefreshToken({
+        id: newUser.id,
+        hashedRefreshToken: hashedRT,
+      }),
+    );
+
+    return {
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+      role: newUser.role,
+      accessToken,
+      refreshToken,
+    };
   }
 
   async logout(userId: number) {
     return await firstValueFrom(
-      this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
+      this.userService.updateHashedRefreshToken({
         id: userId,
         hashedRefreshToken: null,
       }),
@@ -97,18 +99,14 @@ export class AuthService {
   }
 
   async validateJwtUser(userId: number) {
-    const user = await firstValueFrom(
-      this.userClient.send(UserPatterns.GET_USER, userId),
-    );
+    const user = await firstValueFrom(this.userService.findOne({ id: userId }));
     if (!user) throw new UnauthorizedException('User not found!');
     const currentUser = { id: user.id, role: user.role };
     return currentUser;
   }
 
   async validateRefreshToken(userId: number, refreshToken: string) {
-    const user = await firstValueFrom(
-      this.userClient.send(UserPatterns.GET_USER, userId),
-    );
+    const user = await firstValueFrom(this.userService.findOne({ id: userId }));
     if (!user) throw new UnauthorizedException('User not found!');
 
     const refreshTokenMatched = await verify(
@@ -122,21 +120,32 @@ export class AuthService {
     return currentUser;
   }
 
-  async validateGoogleUser(googleUser: CreateUserDto) {
-    const user = await firstValueFrom(
-      this.userClient.send(UserPatterns.GET_USER_BY_EMAIL, googleUser.email),
+  async validateGoogleUser(googleUser: {
+    email: string;
+    name: string;
+    password: '';
+  }) {
+    const response = await firstValueFrom(
+      this.userService.findByEmail({ email: googleUser.email }),
     );
-    if (user) return user;
+    console.log('Google User -----------', googleUser);
+    if (response.user) return response.user;
     return await firstValueFrom(
-      this.userClient.send(UserPatterns.CREATE_USER, googleUser),
+      this.userService.createUser({
+        ...googleUser,
+        provider: 'google',
+      }),
     );
   }
 
   async validateLocalUser(email: string, password: string) {
-    const user = await firstValueFrom(
-      this.userClient.send(UserPatterns.GET_USER_BY_EMAIL, email),
+    const response = await firstValueFrom(
+      this.userService.findByEmail({ email }),
     );
+    const user = response.user;
     if (!user) throw new UnauthorizedException('User not found!');
+    if (user.provider !== 'local')
+      throw new UnauthorizedException('Invalid Credentials!');
     const isPasswordMatched = verify(user.password, password);
     if (!isPasswordMatched)
       throw new UnauthorizedException('Invalid Credentials!');
@@ -149,7 +158,7 @@ export class AuthService {
       await this.tokenService.generateTokens(userId);
     const hashedRT = await hash(refreshToken);
     await firstValueFrom(
-      this.userClient.send(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN, {
+      this.userService.updateHashedRefreshToken({
         id: userId,
         hashedRefreshToken: hashedRT,
       }),

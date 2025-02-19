@@ -1,43 +1,39 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, HttpStatus } from '@nestjs/common';
+import { GrpcMethod, Payload, RpcException } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
   CreateUserDto,
   UpdateUserDto,
   UserPatterns,
 } from '@repo/contracts/users';
+import { USER_SERVICE_NAME } from '@repo/config/users';
 
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @MessagePattern(UserPatterns.CREATE_USER)
-  create(@Payload() createUserDto: CreateUserDto) {
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.CREATE_USER)
+  async createUser(@Payload() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @MessagePattern(UserPatterns.FIND_ALL_USER)
-  findAll() {
-    return this.usersService.findAll();
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.FIND_ONE)
+  async findOne(@Payload() { id }: { id: number }) {
+    return this.usersService.findOne({ id });
   }
 
-  @MessagePattern(UserPatterns.GET_USER)
-  findOne(@Payload() id: number) {
-    return this.usersService.findOne(id);
-  }
-
-  @MessagePattern(UserPatterns.UPDATE_USER)
-  update(@Payload() updateUserDto: UpdateUserDto) {
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.UPDATE_USER)
+  async update(@Payload() updateUserDto: UpdateUserDto) {
     return this.usersService.update(updateUserDto.id, updateUserDto);
   }
 
-  @MessagePattern(UserPatterns.DELETE_USER)
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.DELETE_USER)
   remove(@Payload() id: number) {
     return this.usersService.remove(id);
   }
 
-  @MessagePattern(UserPatterns.UPDATE_HASHED_REFRESH_TOKEN)
-  updateHashedRefreshToken(
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.UPDATE_HASHED_REFRESH_TOKEN)
+  async updateHashedRefreshToken(
     @Payload() updateUserDto: { id: number; hashedRefreshToken: string },
   ) {
     return this.usersService.updateHashedRefreshToken(
@@ -46,8 +42,9 @@ export class UsersController {
     );
   }
 
-  @MessagePattern(UserPatterns.GET_USER_BY_EMAIL)
-  findByEmail(@Payload() email: string) {
-    return this.usersService.findByEmail(email);
+  @GrpcMethod(USER_SERVICE_NAME, UserPatterns.FIND_BY_EMAIL)
+  async findByEmail(@Payload() { email }: { email: string }) {
+    const user = await this.usersService.findByEmail(email);
+    return user;
   }
 }

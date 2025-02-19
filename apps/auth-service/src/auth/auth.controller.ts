@@ -24,7 +24,9 @@ export class AuthController {
   }
 
   @GrpcMethod('AuthService', AuthPatterns.VALIDATE_GOOGLE_USER)
-  validateGoogleUser(@Payload() googleUser: CreateUserDto) {
+  validateGoogleUser(
+    @Payload() googleUser: { email: string; name: string; password: '' },
+  ) {
     return this.authService.validateGoogleUser(googleUser);
   }
 

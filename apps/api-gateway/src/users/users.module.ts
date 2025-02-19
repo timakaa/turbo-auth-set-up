@@ -7,6 +7,7 @@ import {
   USER_SERVICE_NAME,
   USER_SERVICE_PORT,
 } from '@repo/config/users';
+import { UsersProtoPaths } from '@repo/config/proto-paths';
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import {
       {
         name: USER_SERVICE_NAME,
         useFactory: () => ({
-          transport: Transport.TCP,
+          transport: Transport.GRPC,
           options: {
-            host: USER_SERVICE_HOST,
-            port: USER_SERVICE_PORT,
+            protoPath: UsersProtoPaths.PROTO_PATH,
+            url: `${USER_SERVICE_HOST}:${USER_SERVICE_PORT}`,
+            package: 'users',
           },
         }),
       },

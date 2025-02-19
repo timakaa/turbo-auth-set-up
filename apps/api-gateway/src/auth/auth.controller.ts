@@ -52,15 +52,15 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req, @Res() res: Response) {
-    console.log('Entering googleCallback');
-    console.log('Request query:', req.query);
-    console.log('Request user:', req.user);
+    // console.log('Entering googleCallback');
+    // console.log('Request query:', req.query);
+    // console.log('Request user:', req.user);
     const response = await this.authService.login(
       req.user.id,
       req.user.name,
       req.user.role,
     );
-    console.log('RESPONSE -------', response);
+    // console.log('RESPONSE -------', response);
     res.redirect(
       `${FRONTEND_URL}/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}&role=${response.role}`,
     );

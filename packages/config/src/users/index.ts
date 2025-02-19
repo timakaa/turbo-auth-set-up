@@ -9,4 +9,4 @@ export const USER_SERVICE_PORT: number = parseInt(
   process.env.USER_SERVICE_PORT || "3002",
 );
 
-export const USER_SERVICE_NAME = "USER_SERVICE";
+export const USER_SERVICE_NAME = "UsersService";

@@ -169,6 +169,9 @@ importers:
       '@repo/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@repo/proto':
+        specifier: workspace:*
+        version: link:../../packages/proto
       argon2:
         specifier: ^0.41.1
         version: 0.41.1
@@ -275,6 +278,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/proto':
+        specifier: workspace:*
+        version: link:../../packages/proto
       '@types/pg':
         specifier: ^8.11.2
         version: 8.11.11
