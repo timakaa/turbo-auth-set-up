@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package users;
+
+service UsersService {
+  rpc CreateUser (CreateUserRequest) returns (UserResponse);
+  rpc FindOne (FindOneRequest) returns (UserResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (UserResponse);
+  rpc UpdateHashedRefreshToken (UpdateHashedRefreshTokenRequest) returns (UserResponse);
+  rpc FindByEmail (FindByEmailRequest) returns (FindByEmailResponse);
+}
+
+message UserResponse {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string provider = 4;
+  string password = 5;
+  string hashedRefreshToken = 6;
+  string role = 7;
+}
+
+message FindByEmailResponse {
+  oneof result {
+    UserResponse user = 1;
+    google.protobuf.Empty not_found = 2;
+  }
+}
+
+// Create User
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string provider = 4;
+}
+
+// Find One
+
+message FindOneRequest {
+  int32 id = 1;
+}
+
+// Update User
+
+message UpdateUserRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string password = 4;
+}
+
+// Delete User
+
+message DeleteUserRequest {
+  int32 id = 1;
+}
+
+// Update Hashed Refresh Token
+
+message UpdateHashedRefreshTokenRequest {
+  int32 id = 1;
+  string hashedRefreshToken = 2;
+}
+
+// Find By Email
+
+message FindByEmailRequest {
+  string email = 1;
+}

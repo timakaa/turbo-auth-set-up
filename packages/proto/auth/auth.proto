@@ -16,17 +16,18 @@ service AuthService {
 
 // Login
 message LoginRequest {
-  uint64 userId = 1;
+  int32 userId = 1;
   string name = 2;
-  string role = 3;
+  string role = 4;
 }
 
 message AuthResponse {
-  uint64 id = 1;
+  int32 id = 1;
   string name = 2;
-  string role = 3;
-  string accessToken = 4;
-  string refreshToken = 5;
+  string email = 3;
+  string role = 4;
+  string accessToken = 5;
+  string refreshToken = 6;
 }
 
 // SignUp
@@ -44,7 +45,7 @@ message SignUpResponse {
 
 // Logout
 message LogoutRequest {
-  uint64 userId = 1;
+  int32 userId = 1;
 }
 
 message LogoutResponse {
@@ -54,6 +55,8 @@ message LogoutResponse {
 // ValidateGoogleUser
 message ValidateGoogleUserRequest {
   string email = 1;
+  string name = 2;
+  string password = 3;
 }
 
 message ValidateGoogleUserResponse {
@@ -69,39 +72,39 @@ message ValidateLocalUserRequest {
 }
 
 message ValidateLocalUserResponse {
-  uint64 id = 1;
+  int32 id = 1;
   string name = 2;
   string role = 4;
 }
 
 // ValidateJwtUser
 message ValidateJwtUserRequest {
-  uint64 userId = 1;
+  int32 userId = 1;
 }
 
 message ValidateJwtUserResponse {
-  uint64 id = 1;
+  int32 id = 1;
   string role = 3;
 }
 
 // ValidateRefreshToken
 message ValidateRefreshTokenRequest {
-  uint64 userId = 1;
+  int32 userId = 1;
   string refreshToken = 2;
 }
 
 message ValidateRefreshTokenResponse {
-  uint64 id = 1;
+  int32 id = 1;
 }
 
 // RefreshToken
 message RefreshTokenRequest {
-  uint64 userId = 1;
+  int32 userId = 1;
   string name = 2;
 }
 
 message RefreshTokenResponse {
-  uint64 id = 1;
+  int32 id = 1;
   string name = 2;
   string accessToken = 3;
   string refreshToken = 4;

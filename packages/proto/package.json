@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "exports": {
-    "./auth/interfaces": "./auth/index.ts"
+    "./auth/interfaces": "./auth/index.ts",
+    "./users/interface": "./users/index.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"
   },
   "scripts": {
-    "generate": "tsproto --path ./auth",
+    "generate": "tsproto --path ./",
     "build": "pnpm generate"
   },
   "dependencies": {

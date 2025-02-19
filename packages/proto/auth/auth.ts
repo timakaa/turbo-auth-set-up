@@ -58,6 +58,7 @@ export namespace auth {
     export interface AuthResponse {
         id?: number;
         name?: string;
+        email?: string;
         role?: string;
         accessToken?: string;
         refreshToken?: string;
@@ -83,6 +84,8 @@ export namespace auth {
     // ValidateGoogleUser
     export interface ValidateGoogleUserRequest {
         email?: string;
+        name?: string;
+        password?: string;
     }
     export interface ValidateGoogleUserResponse {
         id?: string;
