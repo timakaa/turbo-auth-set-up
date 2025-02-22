@@ -27,6 +27,8 @@ cd turbo-auth
 pnpm install
 ```
 
+---
+
 ### Start project
 
 ```bash
