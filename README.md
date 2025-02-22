@@ -7,7 +7,7 @@
                 \ \_\ \____/\ \_\  \ \_,__/\ \____/\ \_\ \_\ \____/ \ \__\\ \_\ \_\
                  \/_/\/___/  \/_/   \/___/  \/___/  \/_/\/_/\/___/   \/__/ \/_/\/_/
                  ------------------------------------------------------------------
-                                        NestJS Auth Boilerplate
+                                      NestJS Auth Boilerplate
 ```
 
 Want to start a new microservice project but don't want to deal with all problems that come with authentication? This is the perfect starting point for you.
