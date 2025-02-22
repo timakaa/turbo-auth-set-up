@@ -22,7 +22,7 @@ Choose set up you want in different branches.
 ### Installation
 
 ```bash
-git clone https://github.com/turbo-labs/turbo-auth.git
+git clone https://github.com/timakaa/turbo-auth-set-up.git
 cd turbo-auth
 pnpm install
 ```
